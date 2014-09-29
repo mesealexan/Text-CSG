@@ -1,0 +1,12 @@
+body {
+		position: fixed;
+		color: #ffffff;
+		font-family:Monospace;
+		font-size:13px;
+		text-align:center;
+		font-weight: bold;
+
+		background-color: #ffffff;
+		margin: 0px;
+		overflow: hidden;
+	}

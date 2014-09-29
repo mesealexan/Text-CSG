@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>title</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="vendor/three.min.js"></script>
+    <script src="vendor/OrbitControls.js"></script>
+    <script src="vendor/helvetiker_regular.typeface.js"></script>
+    <script src="vendor/ThreeCSG.js"></script>
+
+
+    
+  </head>
+  <body>
+  <div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
+    <script>
+
+var container, scene, camera, renderer, controls, stats;
+var mesh;
+var jsonLoader = new THREE.JSONLoader(); 
+var mesh;
+
+init(); 
+animate();
+  
+function init()
+    {
+    scene = new THREE.Scene();
+
+    var SCREEN_WIDTH = window.innerWidth; 
+    var SCREEN_HEIGHT = window.innerHeight; 
+    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 200000;
+    camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR); 
+    camera.position.set(-2000,2000,2000); 
+    camera.lookAt(scene.position);   
+    scene.add(camera); 
+
+    // RENDERER
+    if (window.WebGLRenderingContext) 
+        renderer = new THREE.WebGLRenderer({antialias:true, alpha: true });
+    else
+        renderer = new THREE.CanvasRenderer({antialias:true, alpha: true });
+
+    renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT); 
+    container = document.getElementById( 'ThreeJS' ); 
+    container.appendChild( renderer.domElement ); 
+
+    controls = new THREE.OrbitControls( camera, renderer.domElement ); 
+
+    var theText = "Looks like it works";
+    var text3d = new THREE.TextGeometry( theText, {
+
+                    size: 80,
+                    height: 50,
+                    curveSegments: 11,
+                    font: "helvetiker"
+
+                });
+
+                text3d.computeBoundingBox();
+
+   // var textMaterial = new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff, overdraw: 0.5 } );
+     //           text = new THREE.Mesh( text3d, textMaterial );
+
+    var cubeMesh = new THREE.Mesh( text3d );
+    var cubeBSP = new ThreeBSP( cubeMesh );
+               // scene.add(text)
+
+
+    var BoxGeometry2 = new THREE.BoxGeometry( 1300, 200, 20, 1, 1, 1 );
+    BoxGeometry2.applyMatrix( new THREE.Matrix4().makeTranslation(500,20,30) );
+    var cubeMesh2 = new THREE.Mesh( BoxGeometry2 );
+    var cubeBSP2 = new ThreeBSP( cubeMesh2 );
+
+var materialNormal = new THREE.MeshNormalMaterial();
+    var newBSP = cubeBSP2.subtract( cubeBSP );
+    var newMesh = newBSP.toMesh( materialNormal );
+    newMesh.position.set(0, 60, 0);
+
+    scene.add( newMesh );
+
+    var ambientLight = new THREE.AmbientLight(0xffffff); 
+    scene.add(ambientLight);
+    }
+
+function animate() 
+    {
+    requestAnimationFrame( animate ); 
+    renderer.render( scene, camera );   
+    controls.update(); 
+    }
+
+    </script>
+    </div>
+  </body>
+</html>
+
+
